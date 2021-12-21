@@ -21,9 +21,9 @@ flags.DEFINE_string(
     'experiment', '',
     'Suffix to add to model name, should describe purpose of run.')
 flags.DEFINE_string('gpus', '', 'Comma seperated list of GPUS to run on.')
-flags.DEFINE_integer('epochs', 480, 'Number of epochs to train.')
+flags.DEFINE_integer('epochs', 5, 'Number of epochs to train.')
 flags.DEFINE_integer('batch_size', 64, 'Size of each minibatch.')
-flags.DEFINE_integer('image_size', 224,
+flags.DEFINE_integer('image_size', 32,
                      'Height and Width of processed images.')
 flags.DEFINE_float('learning_rate', .0128, 'Starting learning rate.')
 flags.DEFINE_float('wd', 1e-4, 'Weight decay loss coefficient.')
@@ -58,7 +58,7 @@ def main(argv):
 
     def train_input_fn():
         ds = tfds.load(
-            "imagenet2012:5.0.0",
+            "cifar10",
             split=tfds.Split.TRAIN,
             shuffle_files=True)
         ds = ds.shuffle(buffer_size=10000)
@@ -69,8 +69,8 @@ def main(argv):
 
     def eval_input_fn():
         ds = tfds.load(
-            "imagenet2012:5.0.0",
-            split=tfds.Split.VALIDATION)
+            "cifar10",
+            split=tfds.Split.TEST)
         ds = ds.map(eval_preprocess, num_parallel_calls=tf.data.experimental.AUTOTUNE)
         ds = ds.batch(FLAGS.batch_size)
         ds = ds.prefetch(tf.data.experimental.AUTOTUNE)
@@ -129,7 +129,8 @@ def main(argv):
         reg_losses = model.get_losses_for(None) + model.get_losses_for(features)
         if reg_losses:
             total_loss += tf.math.add_n(reg_losses)
-
+        print(predictions)
+        print(labels)
         # Compute training metrics.
         accuracy = tf.compat.v1.metrics.accuracy(
             labels=labels,
