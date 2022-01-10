@@ -21,7 +21,7 @@ flags.DEFINE_string(
     'experiment', '',
     'Suffix to add to model name, should describe purpose of run.')
 flags.DEFINE_string('gpus', '', 'Comma seperated list of GPUS to run on.')
-flags.DEFINE_integer('epochs', 5, 'Number of epochs to train.')
+flags.DEFINE_integer('epochs', 2, 'Number of epochs to train.')
 flags.DEFINE_integer('batch_size', 64, 'Size of each minibatch.')
 flags.DEFINE_integer('image_size', 32,
                      'Height and Width of processed images.')
